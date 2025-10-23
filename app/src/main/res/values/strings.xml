@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">KeyboardDash</string>
+    <string name="accessibility_service_description">Remaps numpad 0 key to space for gaming</string>
+</resources>
