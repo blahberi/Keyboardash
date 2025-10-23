@@ -64,11 +64,11 @@ class Player(
     }
 
     private fun dispatchHold() {
-        dispatchGesture(centerX, centerY, 32, willContinue = true)
+        dispatchGesture(centerX, centerY, 1, willContinue = true)
     }
 
     private fun dispatchRelease() {
-        dispatchGesture(0f, 0f, 32, willContinue = false)
+        dispatchGesture(0f, 0f, 1, willContinue = false)
     }
 
     private fun dispatchPause() {
