@@ -1,36 +1,50 @@
 package com.example.keyboarddash
 
 import android.accessibilityservice.AccessibilityService
-import android.graphics.Path
 import android.view.KeyEvent
 import android.view.accessibility.AccessibilityEvent
 
 class RemapService : AccessibilityService() {
-    private val center = Path().apply {
-        val displayMetrics = resources.displayMetrics
-        val screenWidth = displayMetrics.widthPixels
-        val screenHeight = displayMetrics.heightPixels
+    private val keys = setOf(
+        KeyEvent.KEYCODE_NUMPAD_5,
+    )
 
-        val centerX = screenWidth / 2f
-        val centerY = screenHeight / 2f
-        moveTo(centerX, centerY)
+    private lateinit var player: Player
+
+    override fun onServiceConnected() {
+        super.onServiceConnected()
+
+        player = Player(this)
     }
 
-    private val holdingJob = HoldingJob(this, center)
-
     override fun onKeyEvent(event: KeyEvent?): Boolean {
-        if (event?.keyCode != KeyEvent.KEYCODE_NUMPAD_0) {
+        if (event?.keyCode !in keys) {
             return super.onKeyEvent(event)
         }
-        when (event.action) {
-            KeyEvent.ACTION_DOWN -> holdingJob.start()
-            KeyEvent.ACTION_UP -> holdingJob.stop()
+        when (event?.keyCode) {
+            KeyEvent.KEYCODE_NUMPAD_5 -> handleJump(event)
+            KeyEvent.KEYCODE_ESCAPE -> handlePause(event)
         }
         return true
     }
+
     override fun onAccessibilityEvent(event: AccessibilityEvent?) { }
 
     override fun onInterrupt() {
+        player.stopJumping()
+    }
+
+    private fun handleJump(event: KeyEvent) {
+        when (event.action) {
+            KeyEvent.ACTION_DOWN -> player.startJumping()
+            KeyEvent.ACTION_UP -> player.stopJumping()
+        }
+    }
+
+    private fun handlePause(event: KeyEvent) {
+        when (event.action) {
+            KeyEvent.ACTION_DOWN -> player.pauseGame()
+        }
     }
 
 }
